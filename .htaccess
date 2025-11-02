@@ -1,11 +1,11 @@
 # FastCGI configuration for Flask app
+AddHandler fcgid-script .fcgi
+Options +ExecCGI +FollowSymLinks
+
 RewriteEngine On
 RewriteBase /
 
-# Don't rewrite static files
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
-
-# Route everything else through FastCGI
+# Don't rewrite dispatch.fcgi itself
+RewriteCond %{REQUEST_URI} !^/dispatch\.fcgi
+# Route everything through FastCGI
 RewriteRule ^(.*)$ dispatch.fcgi/$1 [QSA,L]
