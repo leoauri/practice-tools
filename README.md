@@ -10,32 +10,9 @@ Track tempo progression on jazz standards using a weighted selection algorithm t
 ## Tech Stack
 
 - **Frontend**: Vanilla JavaScript (ES Modules), HTML5, CSS3
-- **Backend**: Flask (Python) with Passenger WSGI
+- **Backend**: Flask (Python)
 - **Database**: MySQL
-- **Deployment**: DreamHost shared hosting with Passenger
-
-## Project Structure
-
-```
-practice-tools/
-├── passenger_wsgi.py      # Passenger entry point
-├── pyproject.toml         # Python dependencies (uv)
-├── .env                   # Database credentials (gitignored)
-├── .env.example           # Template for .env
-├── schema.sql             # Database schema
-├── app/                   # Flask application
-│   ├── __init__.py
-│   └── speed_standards/   # Speed Standards tool
-│       ├── __init__.py
-│       ├── routes.py
-│       └── db.py
-└── public/                # Static files (web root)
-    ├── index.html
-    ├── styles.css
-    └── speed-standards/   # Speed Standards frontend
-        ├── index.html
-        └── song-selector.js
-```
+- **Deployment**: DreamHost shared hosting
 
 ## Local Development
 
@@ -79,8 +56,8 @@ practice-tools/
 
 - SSH access to DreamHost
 - Python 3.8+ installed
-- Passenger support (`which passenger` should return a path)
-- MySQL database created via DreamHost panel
+- [uv working](https://docs.astral.sh/uv/getting-started/installation/)
+- MySQL database
 
 ### Deployment Steps
 
@@ -96,18 +73,12 @@ practice-tools/
    cd practice-tools
    ```
 
-3. **Install uv (if not already installed):**
-   ```bash
-   curl -LsSf https://astral.sh/uv/install.sh | sh
-   source $HOME/.cargo/env
-   ```
-
-4. **Install dependencies with uv:**
+3. **Install dependencies with uv:**
    ```bash
    uv sync
    ```
 
-5. **Configure environment:**
+4. **Configure environment:**
    ```bash
    cp .env.example .env
    nano .env
@@ -121,33 +92,19 @@ practice-tools/
    DB_NAME=your_db_name
    ```
 
-6. **Load database schema:**
+5. **Load database schema:**
    ```bash
    mysql -h mysql.yourdomain.com -u your_db_user -p your_db_name < schema.sql
    ```
 
-7. **Configure Apache:**
+6. **Configure Apache:**
 
    In your DreamHost panel:
-   - Go to Domains → Manage Domains
-   - Edit your domain
-   - Set "Web directory" to: `/home/username/practice-tools/public`
-   - Enable Passenger (should be automatic if detected)
+   - Go to Websites → Manage Websites
+   - Manage your website → Settings → Directories → Modify
+   - Set "Web directory" to: `/home/username/practice-tools`, Save Changes
 
-   Alternatively, create/edit `.htaccess` in `public/`:
-   ```apache
-   PassengerEnabled On
-   PassengerAppRoot /home/username/practice-tools
-   PassengerPython /home/username/practice-tools/.venv/bin/python3
-   ```
-
-8. **Restart Passenger:**
-   ```bash
-   mkdir -p tmp
-   touch tmp/restart.txt
-   ```
-
-9. **Test deployment:**
+7. **Test deployment:**
    Visit your domain in a browser.
 
 ### Updating
@@ -156,22 +113,7 @@ practice-tools/
 cd ~/practice-tools
 git pull
 uv sync  # Update dependencies if changed
-touch tmp/restart.txt  # Restart Passenger
 ```
-
-### Troubleshooting
-
-**Check Passenger logs:**
-```bash
-tail -f ~/logs/yourdomain.com/http/error.log
-```
-
-**Common issues:**
-
-- **500 Error**: Check `passenger_wsgi.py` paths match your server setup
-- **Database connection fails**: Verify `.env` credentials and MySQL host
-- **Passenger not loading**: Ensure `passenger_wsgi.py` is in project root
-- **Python version mismatch**: Update `INTERP` path in `passenger_wsgi.py`
 
 ## API Endpoints
 
