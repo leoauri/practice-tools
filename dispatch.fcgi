@@ -1,10 +1,15 @@
-#!/home/leoauricom/practice-tools/.venv/bin/python
+#!/usr/bin/env python3
 """
 FastCGI dispatch script for DreamHost shared hosting.
 """
 
 import sys
 import os
+
+# Activate virtualenv
+activate_this = os.path.join(os.path.dirname(__file__), '.venv', 'bin', 'activate_this.py')
+if os.path.exists(activate_this):
+    exec(open(activate_this).read(), {'__file__': activate_this})
 
 # Add project to path
 sys.path.insert(0, os.path.dirname(__file__))
