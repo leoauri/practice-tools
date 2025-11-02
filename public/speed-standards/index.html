@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Standards - Practice Tools</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav class="breadcrumb">
+                <a href="/">Home</a> / Speed Standards
+            </nav>
+            <h1>Speed Standards</h1>
+            <p>Practice tempo progression tracker</p>
+        </header>
+
+        <main>
+            <section class="action-section">
+                <button id="select-song" class="btn btn-primary">
+                    Select Song to Practice
+                </button>
+                <div id="selected-song" class="selected-song"></div>
+            </section>
+
+            <section class="repertoire-section">
+                <h2>Your Repertoire</h2>
+                <div id="loading" class="loading">Loading repertoire...</div>
+                <div id="error" class="error" style="display: none;"></div>
+                <div id="repertoire-list" class="repertoire-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="./song-selector.js"></script>
+</body>
+</html>
