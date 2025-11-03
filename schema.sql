@@ -20,7 +20,7 @@ INSERT INTO speed_standards_songs (title, achieved, target) VALUES
     ('Footprints', 108, 180),
     ('God bless the child', 0, 0),
     ('I hear a rhapsody', 0, 0),
-    ('I love you', 0, 212),
+    ('I love you', 0, 0),
     ('I''ll remember April', 0, 0),
     ('Invitation', 0, 0),
     ('Lover man', 0, 0),
