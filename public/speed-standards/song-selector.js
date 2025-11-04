@@ -21,11 +21,11 @@ function weight(song) {
 }
 
 function tried(repertoire) {
-  return repertoire.filter(s => s.target !== 0);
+  return repertoire.filter(s => s.achieved > 0);
 }
 
 function untried(repertoire) {
-  return repertoire.filter(s => s.target === 0);
+  return repertoire.filter(s => s.achieved === 0);
 }
 
 function untriedSong(repertoire) {
@@ -34,10 +34,6 @@ function untriedSong(repertoire) {
     throw new Error("No untried songs available");
   }
   return untriedSongs[Math.floor(Math.random() * untriedSongs.length)];
-}
-
-function unachieved(repertoire) {
-  return repertoire.filter(s => s.target > 0 && s.achieved === 0);
 }
 
 function averageWeight(repertoire) {
@@ -66,12 +62,6 @@ function weightedChoice(items, weights) {
 }
 
 function songToPractice(repertoire) {
-  const unachievedSongs = unachieved(repertoire);
-
-  if (unachievedSongs.length > 0) {
-    return unachievedSongs[Math.floor(Math.random() * unachievedSongs.length)];
-  }
-
   const triedSongs = tried(repertoire);
   const untriedSongs = untried(repertoire);
 
@@ -130,6 +120,35 @@ function hideLoading() {
   document.getElementById('loading').style.display = 'none';
 }
 
+async function handleTempoSave(event) {
+  event.preventDefault();
+
+  const form = event.target;
+  const songId = parseInt(form.dataset.songId, 10);
+  const achieved = parseFloat(form.achieved.value);
+  const target = parseFloat(form.target.value);
+
+  try {
+    await updateSong(songId, achieved, target);
+
+    // Update local repertoire
+    const songIndex = repertoire.findIndex(s => s.id === songId);
+    if (songIndex !== -1) {
+      repertoire[songIndex].achieved = achieved;
+      repertoire[songIndex].target = target;
+
+      // Re-render the repertoire and selected song
+      renderRepertoire(repertoire);
+      renderSelectedSong(repertoire[songIndex]);
+    }
+
+    hideError();
+  } catch (error) {
+    showError('Failed to save tempos. Please try again.');
+    console.error('Error saving tempos:', error);
+  }
+}
+
 function renderSelectedSong(song) {
   const container = document.getElementById('selected-song');
   container.innerHTML = `
@@ -140,8 +159,41 @@ function renderSelectedSong(song) {
         ${song.target > 0 ? `<span>Target: ${song.target} BPM</span>` : '<span>No target set</span>'}
         ${song.target > 0 ? `<span>Progress: ${Math.round((song.achieved / song.target) * 100)}%</span>` : ''}
       </div>
+      <form class="tempo-form" data-song-id="${song.id}">
+        <div class="input-group">
+          <label for="achieved-${song.id}">Achieved Tempo (BPM)</label>
+          <input
+            type="number"
+            id="achieved-${song.id}"
+            name="achieved"
+            value="${song.achieved}"
+            min="0"
+            step="1"
+            required
+          >
+        </div>
+        <div class="input-group">
+          <label for="target-${song.id}">Target Tempo (BPM)</label>
+          <input
+            type="number"
+            id="target-${song.id}"
+            name="target"
+            value="${song.target}"
+            min="0"
+            step="1"
+            required
+          >
+        </div>
+        <button type="submit" class="btn btn-primary">Save Tempos</button>
+      </form>
     </div>
   `;
+
+  // Add form submit handler
+  const form = container.querySelector('.tempo-form');
+  if (form) {
+    form.addEventListener('submit', handleTempoSave);
+  }
 }
 
 function renderRepertoire(repertoire) {
@@ -156,16 +208,20 @@ function renderRepertoire(repertoire) {
     html += '<h3>In Progress</h3><div class="songs-grid">';
     triedSongs.forEach(song => {
       const progress = song.target > 0 ? (song.achieved / song.target) * 100 : 0;
-      const progressClass = progress >= 100 ? 'complete' : progress > 0 ? 'in-progress' : 'unachieved';
+      const progressClass = progress >= 100 ? 'complete' : 'in-progress';
 
       html += `
         <div class="song-card ${progressClass}" data-id="${song.id}">
           <h4>${song.title}</h4>
           <div class="song-stats">
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
-            </div>
-            <span>${song.achieved} / ${song.target} BPM</span>
+            ${song.target > 0 ? `
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+              </div>
+              <span>${song.achieved} / ${song.target} BPM</span>
+            ` : `
+              <span>${song.achieved} BPM achieved</span>
+            `}
           </div>
         </div>
       `;
@@ -180,7 +236,7 @@ function renderRepertoire(repertoire) {
         <div class="song-card untried" data-id="${song.id}">
           <h4>${song.title}</h4>
           <div class="song-stats">
-            <span>No target set</span>
+            ${song.target > 0 ? `<span>Target: ${song.target} BPM</span>` : '<span>No target set</span>'}
           </div>
         </div>
       `;

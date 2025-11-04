@@ -148,6 +148,15 @@ wheels = [
 ]
 
 [[package]]
+name = "flup6"
+version = "1.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/42/6f/4d863fec7432abc7b49f8157b266394ca90cfb488a4e198d41c9f0637495/flup6-1.1.1.tar.gz", hash = "sha256:fd034c6862a320b9f8176a14fa94e05d67d59e61359c34c6dabd0d31a26a4084", size = 45810, upload-time = "2015-07-31T17:08:59.948Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f7/7b/542f155ef756f8589c8771fa0892e1563ec611d6e0f7fb6c9c0ad04d2e3b/flup6-1.1.1-py3-none-any.whl", hash = "sha256:37a59cf1173785b5d505de7aebbcf3e7356f38747bb06d5c96227035637e79d3", size = 71013, upload-time = "2015-07-31T17:09:03.067Z" },
+]
+
+[[package]]
 name = "importlib-metadata"
 version = "8.5.0"
 source = { registry = "https://pypi.org/simple" }
@@ -170,7 +179,7 @@ resolution-markers = [
     "python_full_version == '3.9.*'",
 ]
 dependencies = [
-    { name = "zipp", version = "3.23.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
+    { name = "zipp", version = "3.23.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.9.*'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/76/66/650a33bd90f786193e4de4b3ad86ea60b53c89b669a5c7be931fac31cdb0/importlib_metadata-8.7.0.tar.gz", hash = "sha256:d13b81ad223b890aa16c5471f2ac3056cf76c5f10f82d6f9292f0b415f389000", size = 56641, upload-time = "2025-04-27T15:29:01.736Z" }
 wheels = [
@@ -479,6 +488,7 @@ dependencies = [
     { name = "flask", version = "3.1.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
     { name = "flask-cors", version = "5.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "flask-cors", version = "6.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
+    { name = "flup6" },
     { name = "mysql-connector-python", version = "9.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "mysql-connector-python", version = "9.4.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.9.*'" },
     { name = "mysql-connector-python", version = "9.5.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
@@ -490,6 +500,7 @@ dependencies = [
 requires-dist = [
     { name = "flask", specifier = ">=3.0.0" },
     { name = "flask-cors", specifier = ">=4.0.0" },
+    { name = "flup6", specifier = ">=1.1.1" },
     { name = "mysql-connector-python", specifier = ">=8.2.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
 ]
