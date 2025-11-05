@@ -1,1 +1,1 @@
-Building a collection of music practice tools following @vanilla-js-guidelines.md
+Building a collection of music practice tools following vanilla-js-guidelines.md

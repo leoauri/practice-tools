@@ -25,4 +25,9 @@ def create_app():
     def speed_standards():
         return app.send_static_file('speed-standards/index.html')
 
+    # Serve 2d6-scale tool
+    @app.route('/2d6-scale/')
+    def scale_2d6():
+        return app.send_static_file('2d6-scale/index.html')
+
     return app
