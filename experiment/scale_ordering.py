@@ -88,8 +88,12 @@ def calculate_rotated_magnitude(scale_notes, alpha=0.5):
     for angle in angles:
         # Calculate angular difference (shortest path on circle)
         diff = normalize_angle(centroid_angle - angle)
-        # Rotate by alpha fraction of the difference
-        rotated_angle = angle + alpha * diff
+        # Scale alpha based on angular distance from centroid
+        # Notes pointing away from centroid (|diff| = π) get alpha = 0
+        # Notes aligned with centroid (diff = 0) get alpha = max_alpha
+        scaled_alpha = alpha * (1 - abs(diff) / math.pi)
+        # Rotate by scaled alpha fraction of the difference
+        rotated_angle = angle + scaled_alpha * diff
         # Add rotated unit vector
         x_sum += math.cos(rotated_angle)
         y_sum += math.sin(rotated_angle)
