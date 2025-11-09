@@ -3,19 +3,7 @@
  * Generates musical scales using a 2d6 dice algorithm
  */
 
-// Note names (semitones from C)
-const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-
-// VexFlow note mapping (with octave)
-function noteToVexFlow(semitone) {
-  const octave = Math.floor(semitone / 12) + 4;
-  // Handle negative semitones with proper modulo
-  const noteIndex = ((semitone % 12) + 12) % 12;
-  const noteName = NOTE_NAMES[noteIndex];
-
-  // Convert to VexFlow format (e.g., "C#/4" or "C/4")
-  return `${noteName}/${octave}`;
-}
+import { chooseAccidentals } from './accidentals.js';
 
 /**
  * Generate a scale using the 2d6 algorithm
@@ -79,19 +67,21 @@ function renderScale(scale, containerId) {
   stave.addClef('treble');
   stave.setContext(context).draw();
 
+  // Choose accidentals intelligently
+  const noteNames = chooseAccidentals(scale);
+
   // Convert scale to VexFlow notes
-  const vexNotes = scale.map(semitone => {
-    const vexNote = noteToVexFlow(semitone);
+  const vexNotes = noteNames.map(noteName => {
     const note = new VF.StaveNote({
-      keys: [vexNote],
+      keys: [noteName],
       duration: 'q' // Quarter note
     });
 
-    // Add accidentals for sharp notes
-    const noteIndex = ((semitone % 12) + 12) % 12;
-    const noteName = NOTE_NAMES[noteIndex];
+    // Add accidentals for sharp or flat notes
     if (noteName.includes('#')) {
       note.addModifier(new VF.Accidental('#'), 0);
+    } else if (noteName.includes('b')) {
+      note.addModifier(new VF.Accidental('b'), 0);
     }
 
     return note;
@@ -110,7 +100,14 @@ function renderScale(scale, containerId) {
 // UI Event Handlers
 function generateNewScale() {
   const scale = generate2d6Scale();
-  renderScale(scale, 'scale-display');
+  // Reverse to show ascending instead of descending
+  const ascendingScale = scale.reverse();
+  // Append the first note an octave higher
+  const firstNote = ascendingScale[0];
+  const octaveHigher = firstNote + 12;
+  ascendingScale.push(octaveHigher);
+
+  renderScale(ascendingScale, 'scale-display');
 }
 
 // Initialize
