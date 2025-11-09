@@ -66,6 +66,9 @@ function scoreScale(semitones, noteNames) {
       if (!isValidInterval(semitoneDistance, letterDistance)) {
         score -= 1;
       }
+      if (letterDistance == 0 && semitoneDistance > 0) {
+        score -= 1;
+      }
     }
   }
 

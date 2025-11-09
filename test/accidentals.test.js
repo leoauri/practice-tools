@@ -22,6 +22,12 @@ test('Guideline 1b: A# B (prefer different note names)', () => {
   assert.deepStrictEqual(result, ['A#/4', 'B/4'], 'Should choose A# B, not Bb B');
 });
 
+test('Guideline 1c: prioritise avoiding note name clash', () => {
+  const scale = [9, 10, 13, 15, 18, 19, 21];
+  const result = chooseAccidentals(scale);
+  assert.deepStrictEqual(result, ['A/4', 'Bb/4', 'C#/5', 'D#/5', 'F#/5', 'G/5', 'A/5'], 'Should avoid A & A#');
+});
+
 // Guideline 2: Note name should reflect interval size
 test('Guideline 2a: G Bb (note name reflects interval)', () => {
   const scale = [7, 10]; // G, Bb/A#
