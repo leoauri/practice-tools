@@ -4,6 +4,7 @@
  */
 
 import { chooseAccidentals } from './accidentals.js';
+import { optimizeForTrebleClef } from './octave-optimization.js';
 
 /**
  * Generate a scale using the 2d6 algorithm
@@ -68,7 +69,10 @@ function renderScale(scale, containerId) {
   stave.setContext(context).draw();
 
   // Choose accidentals intelligently
-  const noteNames = chooseAccidentals(scale);
+  let noteNames = chooseAccidentals(scale);
+
+  // Optimize octave placement for treble clef
+  noteNames = optimizeForTrebleClef(noteNames);
 
   // Convert scale to VexFlow notes
   const vexNotes = noteNames.map(noteName => {

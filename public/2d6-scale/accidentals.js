@@ -3,19 +3,11 @@
  * Follows guidelines in guidelines/accidental-choice.md
  */
 
+import { getLetterIndex } from './utils.js';
+
 const NOTE_NAMES_SHARP = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const NOTE_NAMES_FLAT = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
 const BLACK_KEYS = [1, 3, 6, 8, 10]; // C#/Db, D#/Eb, F#/Gb, G#/Ab, A#/Bb
-
-/**
- * Get letter index (0-6) from note name
- * @param {string} noteName - Note name (e.g., 'C#', 'Bb', 'D')
- * @returns {number} Letter index (C=0, D=1, E=2, F=3, G=4, A=5, B=6)
- */
-function getLetterIndex(noteName) {
-  const letter = noteName[0];
-  return ['C', 'D', 'E', 'F', 'G', 'A', 'B'].indexOf(letter);
-}
 
 /**
  * Check if interval is valid based on semitone and letter distance
