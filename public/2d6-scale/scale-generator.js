@@ -116,3 +116,6 @@ document.getElementById('generate-btn').addEventListener('click', generateNewSca
 window.addEventListener('load', () => {
   generateNewScale();
 });
+
+// Auto-generate a new scale every 2 minutes
+setInterval(generateNewScale, 2 * 60 * 1000);
