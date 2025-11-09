@@ -7,6 +7,9 @@ Collection of music practice utilities built with vanilla JavaScript and Flask.
 ### Speed Standards
 Track tempo progression on jazz standards using a weighted selection algorithm to choose practice songs based on your progress.
 
+### 2d6 Scales
+Generate random musical scales using a 2d6 dice algorithm. Each scale is created by rolling two dice and taking the minimum value to determine interval steps. Scales are automatically generated every 2 minutes and displayed in musical notation.
+
 ## Tech Stack
 
 - **Frontend**: Vanilla JavaScript (ES Modules), HTML5, CSS3
