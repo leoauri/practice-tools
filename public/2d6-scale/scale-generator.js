@@ -81,19 +81,14 @@ function renderScale(scale, containerId) {
       duration: 'q' // Quarter note
     });
 
-    // Add accidentals for sharp or flat notes
-    if (noteName.includes('#')) {
-      note.addModifier(new VF.Accidental('#'), 0);
-    } else if (noteName.includes('b')) {
-      note.addModifier(new VF.Accidental('b'), 0);
-    }
-
     return note;
   });
 
   // Create voice and add notes
   const voice = new VF.Voice({ num_beats: scale.length, beat_value: 4 });
   voice.addTickables(vexNotes);
+
+  Vex.Accidental.applyAccidentals([voice]);
 
   // Format and draw
   const formatter = new VF.Formatter();
