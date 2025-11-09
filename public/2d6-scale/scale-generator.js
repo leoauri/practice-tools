@@ -54,17 +54,17 @@ function renderScale(scale, containerId) {
   // Create renderer
   const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
 
-  // Calculate width based on number of notes (give some padding)
+  // Always render at a comfortable width for the notes
   const noteWidth = 80;
   const padding = 100;
-  const width = Math.max(500, scale.length * noteWidth + padding);
-  const height = 200;
+  const renderWidth = scale.length * noteWidth + padding;
+  const renderHeight = 200;
 
-  renderer.resize(width, height);
+  renderer.resize(renderWidth, renderHeight);
   const context = renderer.getContext();
 
   // Create stave
-  const stave = new VF.Stave(10, 40, width - 20);
+  const stave = new VF.Stave(10, 40, renderWidth - 20);
   stave.addClef('treble');
   stave.setContext(context).draw();
 
@@ -90,10 +90,19 @@ function renderScale(scale, containerId) {
 
   Vex.Accidental.applyAccidentals([voice]);
 
-  // Format and draw
+  // Format and draw with full width
   const formatter = new VF.Formatter();
-  formatter.joinVoices([voice]).format([voice], width - 40);
+  formatter.joinVoices([voice]).format([voice], renderWidth - 40);
   voice.draw(context, stave);
+
+  // Make SVG responsive - scale down to fit container
+  const svg = container.querySelector('svg');
+  if (svg) {
+    svg.setAttribute('viewBox', `0 0 ${renderWidth} ${renderHeight}`);
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', 'auto');
+    svg.style.maxWidth = '100%';
+  }
 }
 
 // UI Event Handlers
