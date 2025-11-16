@@ -106,6 +106,8 @@ function renderScale(scale, containerId) {
 }
 
 // UI Event Handlers
+let autoGenerateInterval = null;
+
 function generateNewScale() {
   const scale = generate2d6Scale();
   // Reverse to show ascending instead of descending
@@ -118,13 +120,23 @@ function generateNewScale() {
   renderScale(ascendingScale, 'scale-display');
 }
 
-// Initialize
-document.getElementById('generate-btn').addEventListener('click', generateNewScale);
+function setGenerateTimer() {
+  // Clear any existing interval
+  if (autoGenerateInterval !== null) {
+    clearInterval(autoGenerateInterval);
+  }
+  // Start new interval
+  autoGenerateInterval = setInterval(generateNewScale, 2 * 60 * 1000);
+}
 
-// Generate initial scale on load
-window.addEventListener('load', () => {
+// Initialize
+document.getElementById('generate-btn').addEventListener('click', () => {
   generateNewScale();
+  setGenerateTimer(); // Reset the timer
 });
 
-// Auto-generate a new scale every 2 minutes
-setInterval(generateNewScale, 2 * 60 * 1000);
+// Generate initial scale on load and start auto-generation
+window.addEventListener('load', () => {
+  generateNewScale();
+  setGenerateTimer();
+});
