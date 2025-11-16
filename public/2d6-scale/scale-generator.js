@@ -99,7 +99,7 @@ function renderScale(scale, containerId) {
   const svg = container.querySelector('svg');
   if (svg) {
     svg.setAttribute('viewBox', `0 0 ${renderWidth} ${renderHeight}`);
-    svg.setAttribute('width', '100%');
+    svg.setAttribute('width', '650');
     svg.setAttribute('height', 'auto');
     svg.style.maxWidth = '100%';
   }
