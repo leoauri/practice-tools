@@ -3,16 +3,56 @@
  */
 
 // State
-let rhythmLength = 1; // Number of eighth notes
-let startPosition = 0; // Starting position (0-7 within first measure)
+let rhythmLength = 1; // Number of eighth notes per phrase
+let startPosition1 = 0; // Starting position for phrase 1 (0-7)
+let startPosition2 = 0; // Desired beat position for phrase 2 (0-7)
 let autoRandomizeTimer = null;
 
 /**
- * Generates a random start position for the rhythm within a measure
+ * Generates a random beat position (0-7)
  * @returns {number} Random position from 0-7 (eighth note positions in 4/4)
  */
-function randomizePosition() {
+function randomBeatPosition() {
     return Math.floor(Math.random() * 8);
+}
+
+/**
+ * Calculates the actual start position for phrase 2
+ * Must be at least 1 eighth rest after phrase 1 ends, on the desired beat
+ * @returns {number} Global position where phrase 2 starts
+ */
+function getPhrase2Start() {
+    const phrase1End = startPosition1 + rhythmLength - 1;
+    const minStart = phrase1End + 2; // At least 1 rest gap
+
+    // Find first occurrence of startPosition2 beat that is >= minStart
+    let measure = Math.floor(minStart / 8);
+    let candidate = measure * 8 + startPosition2;
+
+    if (candidate < minStart) {
+        measure++;
+        candidate = measure * 8 + startPosition2;
+    }
+
+    return candidate;
+}
+
+/**
+ * Checks if a global position should have a note (in either phrase)
+ * @param {number} globalPosition - The global eighth note position
+ * @param {number} phrase2Start - The calculated start of phrase 2
+ * @returns {boolean} True if this position should have a note
+ */
+function isNotePosition(globalPosition, phrase2Start) {
+    // Check phrase 1
+    if (globalPosition >= startPosition1 && globalPosition < startPosition1 + rhythmLength) {
+        return true;
+    }
+    // Check phrase 2
+    if (globalPosition >= phrase2Start && globalPosition < phrase2Start + rhythmLength) {
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -27,9 +67,10 @@ function renderRhythm() {
 
     const VF = Vex.Flow;
 
-    // Calculate how many measures we need
-    const totalEighthNotes = startPosition + rhythmLength;
-    const measuresNeeded = Math.ceil(totalEighthNotes / 8);
+    // Calculate phrase 2 actual start and total measures needed
+    const phrase2Start = getPhrase2Start();
+    const phrase2End = phrase2Start + rhythmLength;
+    const measuresNeeded = Math.ceil(phrase2End / 8);
 
     // Dimensions
     const measureWidth = 300;
@@ -69,7 +110,7 @@ function renderRhythm() {
             const globalPosition = measure * 8 + position;
 
             // Check if this position should have a note
-            if (globalPosition >= startPosition && globalPosition < startPosition + rhythmLength) {
+            if (isNotePosition(globalPosition, phrase2Start)) {
                 // Add eighth note
                 const note = new VF.StaveNote({
                     keys: ['b/4'],
@@ -82,7 +123,7 @@ function renderRhythm() {
                 let restCount = 0;
                 while (position + restCount < 8) {
                     const checkPos = measure * 8 + position + restCount;
-                    if (checkPos >= startPosition && checkPos < startPosition + rhythmLength) {
+                    if (isNotePosition(checkPos, phrase2Start)) {
                         break;
                     }
                     restCount++;
@@ -155,11 +196,13 @@ function decreaseLength() {
 }
 
 /**
- * Randomizes the start position and re-renders
+ * Randomizes both phrase start positions and re-renders
  */
 function randomize() {
-    startPosition = randomizePosition();
+    startPosition1 = randomBeatPosition();
+    startPosition2 = randomBeatPosition();
     renderRhythm();
+    startAutoRandomize();
 }
 
 /**
@@ -181,8 +224,9 @@ function startAutoRandomize() {
  * Initialize the rhythm generator
  */
 function init() {
-    // Set initial random position
-    startPosition = randomizePosition();
+    // Set initial random positions for both phrases
+    startPosition1 = randomBeatPosition();
+    startPosition2 = randomBeatPosition();
 
     // Render initial rhythm
     renderRhythm();
@@ -190,6 +234,7 @@ function init() {
     // Set up event listeners
     const plusBtn = document.getElementById('rhythm-plus-btn');
     const minusBtn = document.getElementById('rhythm-minus-btn');
+    const generateBtn = document.getElementById('generate-btn');
 
     if (plusBtn) {
         plusBtn.addEventListener('click', increaseLength);
@@ -197,6 +242,10 @@ function init() {
 
     if (minusBtn) {
         minusBtn.addEventListener('click', decreaseLength);
+    }
+
+    if (generateBtn) {
+        generateBtn.addEventListener('click', randomize);
     }
 
     // Start auto-randomize timer
