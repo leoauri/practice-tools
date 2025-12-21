@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+notes-app list --account iCloud --folder "Quotes & solutions" --properties body > cards_import.html
+uvx --with beautifulsoup4 --with lxml python -c "
+from bs4 import BeautifulSoup
+
+with open('cards_import.html', 'r') as f:
+    soup = BeautifulSoup(f.read(), 'lxml')
+
+for div in soup.find_all('div'):
+    print(div.get_text())
+" > cards_import.txt

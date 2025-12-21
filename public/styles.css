@@ -276,6 +276,36 @@ header p {
   margin-top: 8px;
 }
 
+/* Strategy Cards */
+.card-section {
+  margin-top: 48px;
+}
+
+.card-display {
+  min-height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.strategy-card {
+  background: var(--card-bg);
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.card-content {
+  font-size: 1.5rem;
+  line-height: 1.8;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   body {
@@ -293,5 +323,13 @@ header p {
 
   .btn {
     width: 100%;
+  }
+
+  .card-content {
+    font-size: 1.25rem;
+  }
+
+  .strategy-card {
+    padding: 24px;
   }
 }

@@ -15,6 +15,9 @@ def create_app():
     from app.speed_standards import routes as speed_standards_routes
     app.register_blueprint(speed_standards_routes.bp, url_prefix='/api/speed-standards')
 
+    from app.strategy_cards import routes as strategy_cards_routes
+    app.register_blueprint(strategy_cards_routes.bp, url_prefix='/api/strategy-cards')
+
     # Serve index.html at root
     @app.route('/')
     def index():
@@ -29,5 +32,10 @@ def create_app():
     @app.route('/2d6-scale/')
     def scale_2d6():
         return app.send_static_file('2d6-scale/index.html')
+
+    # Serve strategy-cards tool
+    @app.route('/strategy-cards/')
+    def strategy_cards():
+        return app.send_static_file('strategy-cards/index.html')
 
     return app
