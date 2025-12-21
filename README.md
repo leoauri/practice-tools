@@ -10,6 +10,9 @@ Track tempo progression on jazz standards using a weighted selection algorithm t
 ### 2d6 Scales
 Generate random musical scales using a 2d6 dice algorithm. Each scale is created by rolling two dice and taking the minimum value to determine interval steps. Scales are automatically generated every 2 minutes and displayed in musical notation.
 
+### Strategy Cards
+Draw random creative strategy cards. Cards can be added to the database for future draws.
+
 ## Tech Stack
 
 - **Frontend**: Vanilla JavaScript (ES Modules), HTML5, CSS3
@@ -125,6 +128,11 @@ uv sync  # Update dependencies if changed
 - `GET /api/speed-standards/repertoire` - Get all songs
 - `PATCH /api/speed-standards/song/<id>` - Update song progress
 - `POST /api/speed-standards/song` - Add new song
+
+### Strategy Cards
+
+- `GET /api/strategy-cards/random` - Get a random strategy card
+- `POST /api/strategy-cards/card` - Add new strategy card
 
 ## Adding New Tools
 

@@ -46,3 +46,17 @@ def get_random_card():
         card = cursor.fetchone()
         cursor.close()
         return card
+
+
+def add_card(content):
+    """Add a new strategy card to the database."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO strategy_cards (content)
+            VALUES (%s)
+        """, (content,))
+        conn.commit()
+        card_id = cursor.lastrowid
+        cursor.close()
+        return card_id

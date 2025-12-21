@@ -86,6 +86,40 @@ header p {
   box-shadow: var(--shadow-lg);
 }
 
+.btn-secondary {
+  background-color: var(--border-color);
+  color: var(--text-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--text-light);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-save {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.btn-save:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-save svg {
+  flex-shrink: 0;
+}
+
 /* Landing page tools grid */
 .tools-grid {
   display: grid;
@@ -124,6 +158,9 @@ header p {
 /* Action section */
 .action-section {
   margin-bottom: 48px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .selected-song {
@@ -306,6 +343,45 @@ header p {
   font-weight: 500;
 }
 
+.strategy-card.success {
+  border-color: var(--success-color);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.strategy-card.edit-mode {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-content-input {
+  width: 100%;
+  min-height: 150px;
+  padding: 20px;
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1.8;
+  color: var(--text-color);
+  font-weight: 500;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  text-align: center;
+}
+
+.card-content-input::placeholder {
+  color: var(--text-light);
+  opacity: 0.5;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   body {
@@ -321,15 +397,20 @@ header p {
     grid-template-columns: 1fr;
   }
 
-  .btn {
-    width: 100%;
-  }
-
   .card-content {
     font-size: 1.25rem;
   }
 
+  .card-content-input {
+    font-size: 1.25rem;
+    padding: 16px;
+  }
+
   .strategy-card {
     padding: 24px;
+  }
+
+  .action-section {
+    flex-direction: row;
   }
 }
