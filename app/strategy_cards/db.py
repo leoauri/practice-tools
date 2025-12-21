@@ -2,7 +2,6 @@
 
 import os
 import random
-import time
 import mysql.connector
 from mysql.connector import Error
 from contextlib import contextmanager
@@ -37,9 +36,6 @@ def get_db_connection():
 
 def get_random_card():
     """Fetch a random strategy card from the database."""
-    # Explicitly seed random with current time to work in FastCGI
-    random.seed(time.time())
-
     with get_db_connection() as conn:
         cursor = conn.cursor(dictionary=True)
         # Fetch all cards and select randomly in Python
