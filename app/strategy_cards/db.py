@@ -1,6 +1,7 @@
 """Database operations for strategy cards tool."""
 
 import os
+import random
 import mysql.connector
 from mysql.connector import Error
 from contextlib import contextmanager
@@ -37,15 +38,17 @@ def get_random_card():
     """Fetch a random strategy card from the database."""
     with get_db_connection() as conn:
         cursor = conn.cursor(dictionary=True)
+        # Fetch all cards and select randomly in Python
         cursor.execute("""
             SELECT id, content
             FROM strategy_cards
-            ORDER BY RAND()
-            LIMIT 1
         """)
-        card = cursor.fetchone()
+        cards = cursor.fetchall()
         cursor.close()
-        return card
+
+        if cards:
+            return random.choice(cards)
+        return None
 
 
 def add_card(content):
