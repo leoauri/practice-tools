@@ -12,7 +12,12 @@ def get_random():
     try:
         card = get_random_card()
         if card:
-            return jsonify(card), 200
+            response = jsonify(card)
+            # Prevent browser caching of random cards
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+            return response, 200
         else:
             return jsonify({'error': 'No cards available'}), 404
     except Exception as e:
