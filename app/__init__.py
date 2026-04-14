@@ -38,4 +38,9 @@ def create_app():
     def strategy_cards():
         return app.send_static_file('strategy-cards/index.html')
 
+    # Serve practice-select tool
+    @app.route('/practice-select/')
+    def practice_select():
+        return app.send_static_file('practice-select/index.html')
+
     return app

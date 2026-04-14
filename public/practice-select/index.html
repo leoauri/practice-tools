@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Select - Practice Tools</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        #items-input {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.2s;
+        }
+
+        #items-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        #result {
+            margin-top: 24px;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 32px 48px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .input-hint {
+            margin-top: 8px;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .action-section {
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav class="breadcrumb">
+                <a href="/">Home</a> / Practice Select
+            </nav>
+            <h1>Practice Select</h1>
+            <p>Weighted random selection</p>
+        </header>
+
+        <main>
+            <section>
+                <textarea id="items-input" placeholder="Enter items, one per line. Optionally add a weight at the end of each line (higher weight = more likely to be selected).
+
+Example:
+Major scales 3
+Minor scales 2
+Arpeggios"></textarea>
+                <p class="input-hint">Format: <code>item name [weight]</code> — weight defaults to 1 if omitted</p>
+            </section>
+
+            <section class="action-section">
+                <button id="select-btn" class="btn btn-primary">Select</button>
+            </section>
+
+            <section id="result"></section>
+        </main>
+    </div>
+
+    <script>
+        function parseItems(text) {
+            const items = [];
+            for (const line of text.split('\n')) {
+                const trimmed = line.trim();
+                if (!trimmed) continue;
+                const parts = trimmed.split(/\s+/);
+                const lastPart = parts[parts.length - 1];
+                const weight = parseInt(lastPart, 10);
+                if (parts.length >= 2 && !isNaN(weight) && String(weight) === lastPart) {
+                    items.push({ name: parts.slice(0, -1).join(' '), weight });
+                } else {
+                    items.push({ name: trimmed, weight: 1 });
+                }
+            }
+            return items;
+        }
+
+        function selectItem(items) {
+            const total = items.reduce((sum, item) => sum + item.weight, 0);
+
+            const draw1 = Math.floor(Math.random() * total) + 1;
+            const draw2 = Math.floor(Math.random() * total) + 1;
+            const selection = Math.min(draw1, draw2);
+
+            let cumulative = 0;
+            for (const item of items) {
+                cumulative += item.weight;
+                if (selection <= cumulative) {
+                    return item.name;
+                }
+            }
+            return items[items.length - 1].name;
+        }
+
+        const textarea = document.getElementById('items-input');
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target !== textarea) return;
+            if (!e.altKey) return;
+            if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            const { selectionStart, value } = textarea;
+            const lines = value.split('\n');
+
+            const textBefore = value.slice(0, selectionStart);
+            const lineIndex = textBefore.split('\n').length - 1;
+            const cursorOffset = selectionStart - (textBefore.lastIndexOf('\n') + 1);
+
+            const swapIndex = e.key === 'ArrowUp' ? lineIndex - 1 : lineIndex + 1;
+            if (swapIndex < 0 || swapIndex >= lines.length) return;
+
+            [lines[lineIndex], lines[swapIndex]] = [lines[swapIndex], lines[lineIndex]];
+
+            // After swap, the moved line is at swapIndex
+            const linesBefore = lines.slice(0, swapIndex);
+            const newLineStart = linesBefore.join('\n').length + (linesBefore.length > 0 ? 1 : 0);
+            const newCursorPos = newLineStart + Math.min(cursorOffset, lines[swapIndex].length);
+
+            textarea.value = lines.join('\n');
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+        }, { capture: true });
+
+        document.getElementById('select-btn').addEventListener('click', () => {
+            const items = parseItems(textarea.value);
+            const resultEl = document.getElementById('result');
+
+            if (items.length === 0) {
+                const error = document.createElement('p');
+                error.className = 'error';
+                error.textContent = 'No items found — add some items above.';
+                resultEl.replaceChildren(error);
+                return;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.textContent = selectItem(items);
+            resultEl.replaceChildren(card);
+        });
+    </script>
+</body>
+</html>
