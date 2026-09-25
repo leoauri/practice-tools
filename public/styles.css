@@ -120,6 +120,37 @@ header p {
   flex-shrink: 0;
 }
 
+/* Button loading state: spinner replaces the label while a request is in flight.
+   The label stays in the layout (just invisible) so the button keeps its size. */
+.btn.is-loading {
+  position: relative;
+  cursor: progress;
+  opacity: 0.8;
+  pointer-events: none;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn.is-loading svg {
+  visibility: hidden;
+}
+
+.btn.is-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 1.25em;
+  height: 1.25em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Landing page tools grid */
 .tools-grid {
   display: grid;

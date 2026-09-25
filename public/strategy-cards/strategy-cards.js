@@ -40,6 +40,11 @@ function hideError() {
   errorEl.style.display = 'none';
 }
 
+function setLoading(button, isLoading) {
+  button.disabled = isLoading;
+  button.classList.toggle('is-loading', isLoading);
+}
+
 function renderCard(card) {
   isEditMode = false;
 
@@ -92,7 +97,9 @@ function cancelEditMode() {
 }
 
 // Event handlers
-document.getElementById('draw-card').addEventListener('click', async () => {
+document.getElementById('draw-card').addEventListener('click', async (event) => {
+  const button = event.currentTarget;
+  setLoading(button, true);
   try {
     const card = await fetchRandomCard();
     renderCard(card);
@@ -100,6 +107,8 @@ document.getElementById('draw-card').addEventListener('click', async () => {
   } catch (error) {
     showError('Failed to draw card. Please try again.');
     console.error('Error drawing card:', error);
+  } finally {
+    setLoading(button, false);
   }
 });
 
@@ -119,13 +128,16 @@ async function handleSaveCard() {
     return;
   }
 
+  const button = document.getElementById('save-card');
+  setLoading(button, true);
   try {
     await createCard(content);
     hideError();
 
-    // Display the saved card
+    // Display the saved card (replaces the save button)
     renderCard({ content });
   } catch (error) {
+    setLoading(button, false);
     showError('Failed to save card. Please try again.');
     console.error('Error creating card:', error);
   }
